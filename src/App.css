@@ -78,8 +78,18 @@
   font-weight: 600;
 }
 
+.data-table tfoot td {
+  border-bottom: none;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
 .data-table tr:hover {
   background-color: rgba(255, 255, 255, 0.05);
+}
+
+.data-table th:last-child,
+.data-table td:last-child {
+  text-align: center;
 }
 
 .btn-action {
@@ -91,6 +101,10 @@
   font-size: 0.85rem;
 }
 
+.btn-action:last-child {
+  margin-right: 0;
+}
+
 .btn-edit {
   background-color: #2196F3;
   color: white;
@@ -99,4 +113,115 @@
 .btn-delete {
   background-color: #F44336;
   color: white;
+}
+
+/* Pagination Styles */
+.pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.icon-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; /* Yuvarlak buton */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.icon-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Skeleton Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-box {
+  display: inline-block;
+  height: 20px;
+  width: 100%;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Search Styles */
+.search-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+}
+
+.search-input-clear-btn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-input-clear-btn:hover {
+  color: white;
+}
+
+.search-input {
+  padding: 8px 30px 8px 12px; /* Sağ tarafta buton için boşluk */
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  width: 100%;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #2196F3;
+  background-color: rgba(255, 255, 255, 0.15);
 }

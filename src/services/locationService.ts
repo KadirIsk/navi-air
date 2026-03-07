@@ -1,4 +1,4 @@
-// import client from '../api/client'; // Backend hazır olduğunda bunu kullanacağız
+import client from '../api/client';
 
 export interface Location {
   id: number;
@@ -8,34 +8,48 @@ export interface Location {
   locationCode: string;
 }
 
-export interface PaginatedResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  limit: number;
+export interface Page<T> {
+  content: T[];
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
 }
 
-export const getLocations = async (page: number, limit: number): Promise<PaginatedResponse<Location>> => {
+export interface ApiResponse<T> {
+  data: T;
+  code: string;
+  message: string;
+}
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        data: [
-          { id: 1, name: 'Istanbul Airport', country: 'Turkey', city: 'Istanbul', locationCode: 'IST' },
-          { id: 2, name: 'Sabiha Gokcen Airport', country: 'Turkey', city: 'Istanbul', locationCode: 'SAW' },
-          { id: 3, name: 'Heathrow Airport', country: 'UK', city: 'London', locationCode: 'LHR' },
-          { id: 4, name: 'JFK Airport', country: 'USA', city: 'New York', locationCode: 'JFK' },
-          { id: 5, name: 'Haneda Airport', country: 'Japan', city: 'Tokyo', locationCode: 'HND' },
-        ],
-        total: 5,
-        page,
-        limit
-      });
-    }, 500);
+export interface LocationFilter {
+  city?: string;
+  locationCode?: string;
+  country?: string;
+  name?: string;
+}
+
+export const getLocations = async (page: number, limit: number, filters?: LocationFilter): Promise<ApiResponse<Page<Location>>> => {
+  const response = await client.get<ApiResponse<Page<Location>>>('/locations', {
+    params: {
+      page: page - 1,
+      size: limit,
+      ...filters
+    }
   });
+  return response.data;
 };
 
 export const deleteLocation = async (id: number): Promise<void> => {
-  console.log(`Location ${id} deleted mock request.`);
-  return Promise.resolve();
+  await client.delete(`/locations/${id}`);
+};
+
+export const createLocation = async (location: Omit<Location, 'id'>): Promise<ApiResponse<Location>> => {
+  const response = await client.post<ApiResponse<Location>>('/locations', location);
+  return response.data;
+};
+
+export const updateLocation = async (id: number, location: Partial<Location>): Promise<ApiResponse<Location>> => {
+  const response = await client.put<ApiResponse<Location>>(`/locations/${id}`, location);
+  return response.data;
 };
