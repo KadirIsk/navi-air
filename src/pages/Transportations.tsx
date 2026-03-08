@@ -17,7 +17,7 @@ import Modal, { type ModalButton } from '../components/Modal';
 
 const Transportations: React.FC = () => {
   const [transportations, setTransportations] = useState<Transportation[]>([]);
-  const [locations, setLocations] = useState<Location[]>([]); // Dropdownlar için
+  const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -31,7 +31,6 @@ const Transportations: React.FC = () => {
   });
   
   const [isAddRowPinned, setIsAddRowPinned] = useState<boolean>(false);
-  const [isAddRowHovered, setIsAddRowHovered] = useState<boolean>(false);
   const [newTransportation, setNewTransportation] = useState<{
     originLocationId: string;
     destinationLocationId: string;
@@ -275,7 +274,7 @@ const Transportations: React.FC = () => {
     </div>
   );
 
-  const isAddActive = isAddRowPinned || isAddRowHovered;
+  const isAddActive = isAddRowPinned;
 
   const locationOptions = locations.map(loc => ({ value: loc.id.toString(), label: `${loc.name} (${loc.locationCode})` }));
   const typeOptions = TRANSPORTATION_TYPES.map(t => ({ value: t, label: t }));
@@ -309,10 +308,7 @@ const Transportations: React.FC = () => {
           <tbody>
             {/* Add Row */}
             <tr 
-              onMouseEnter={() => setIsAddRowHovered(true)}
-              onMouseLeave={() => setIsAddRowHovered(false)}
-              onClick={() => !isAddRowPinned && setIsAddRowPinned(true)}
-              style={{ cursor: isAddRowPinned ? 'default' : 'pointer', backgroundColor: isAddActive ? 'rgba(255,255,255,0.05)' : 'transparent' }}
+              style={{ backgroundColor: isAddActive ? 'rgba(255,255,255,0.05)' : 'transparent' }}
             >
               {isAddActive ? (
                 <>
@@ -346,7 +342,12 @@ const Transportations: React.FC = () => {
                   </td>
                 </>
               ) : (
-                <td colSpan={5} style={{ textAlign: 'center', color: '#aaa', fontStyle: 'italic', padding: '15px' }}>
+                <td 
+                  colSpan={5} 
+                  onClick={() => setIsAddRowPinned(true)}
+                  className="add-new-trigger"
+                  style={{ textAlign: 'center', color: '#aaa', fontStyle: 'italic', padding: '15px', cursor: 'pointer' }}
+                >
                   + Click to add new transportation
                 </td>
               )}

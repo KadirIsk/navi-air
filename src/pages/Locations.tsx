@@ -16,7 +16,6 @@ const Locations: React.FC = () => {
   });
   
   const [isAddRowPinned, setIsAddRowPinned] = useState<boolean>(false);
-  const [isAddRowHovered, setIsAddRowHovered] = useState<boolean>(false);
   const [newLocation, setNewLocation] = useState<Partial<Location>>({
     name: '',
     country: '',
@@ -214,7 +213,7 @@ const Locations: React.FC = () => {
     </div>
   );
 
-  const isAddActive = isAddRowPinned || isAddRowHovered;
+  const isAddActive = isAddRowPinned;
 
   return (
     <div className="page-container">
@@ -243,10 +242,7 @@ const Locations: React.FC = () => {
           </thead>
           <tbody>
             <tr 
-              onMouseEnter={() => setIsAddRowHovered(true)}
-              onMouseLeave={() => setIsAddRowHovered(false)}
-              onClick={() => !isAddRowPinned && setIsAddRowPinned(true)}
-              style={{ cursor: isAddRowPinned ? 'default' : 'pointer', backgroundColor: isAddActive ? 'rgba(255,255,255,0.05)' : 'transparent' }}
+              style={{ backgroundColor: isAddActive ? 'rgba(255,255,255,0.05)' : 'transparent' }}
             >
               {isAddActive ? (
                 <>
@@ -260,13 +256,17 @@ const Locations: React.FC = () => {
                   </td>
                 </>
               ) : (
-                <td colSpan={5} style={{ textAlign: 'center', color: '#aaa', fontStyle: 'italic', padding: '15px' }}>
+                <td 
+                  colSpan={5} 
+                  onClick={() => setIsAddRowPinned(true)}
+                  className="add-new-trigger"
+                  style={{ textAlign: 'center', color: '#aaa', fontStyle: 'italic', padding: '15px', cursor: 'pointer' }}
+                >
                   + Click to add new location
                 </td>
               )}
             </tr>
             {loading ? (
-              // Skeleton Loading Rows (5 adet sahte satır)
               Array.from({ length: 5 }).map((_, index) => (
                 <tr key={`skeleton-${index}`}>
                   <td><div className="skeleton-box" style={{ width: '80%' }}></div></td>
