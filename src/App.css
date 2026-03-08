@@ -1,10 +1,48 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap');
 
+body {
+  margin: 0;
+  font-family: 'DM Mono', monospace;
+  background-color: #000000;
+  color: #e0e0e0;
+  overflow-x: hidden;
+}
+
+/* Wavy S-like Gradient Background (Red, Black, Blue) */
+body::before {
+  content: "";
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  z-index: -1;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    #000000 0%,      /* Black */
+    #4a0000 25%,     /* Dark Red */
+    #000000 50%,     /* Black */
+    #00005a 75%,     /* Dark Blue */
+    #000000 100%     /* Black */
+  );
+  filter: blur(80px);
+  animation: waveSpin 30s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes waveSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* Layout Styles */
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  position: relative;
+  z-index: 1;
+  overflow: hidden; /* Buz efektlerinin taşmasını önlemek için */
 }
 
 .app-header {
@@ -223,6 +261,7 @@
   width: 100%;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  box-sizing: border-box;
 }
 
 .search-input::placeholder {
@@ -405,4 +444,51 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   letter-spacing: 0.5px;
   font-weight: 600;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Login Page Styles */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.login-box {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 40px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.login-box h2 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  text-align: center;
+  color: white;
+  font-family: 'Syne', sans-serif;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.error-message {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #ff8a80;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px solid rgba(244, 67, 54, 0.3);
 }
