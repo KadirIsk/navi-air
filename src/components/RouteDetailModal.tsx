@@ -73,6 +73,7 @@ const RouteDetailModal: React.FC<RouteDetailModalProps> = ({ isOpen, onClose, ro
       map.removeLayer(layer);
     });
 
+    if (route && Object.keys(coords).length > 0) {
       const points: [number, number][] = [];
 
       route.steps.forEach((step) => {
