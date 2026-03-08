@@ -8,31 +8,16 @@ body {
   overflow-x: hidden;
 }
 
-/* Wavy S-like Gradient Background (Red, Black, Blue) */
 body::before {
   content: "";
   position: fixed;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: -1;
-  background: conic-gradient(
-    from 0deg at 50% 50%,
-    #000000 0%,      /* Black */
-    #4a0000 25%,     /* Dark Red */
-    #000000 50%,     /* Black */
-    #00005a 75%,     /* Dark Blue */
-    #000000 100%     /* Black */
-  );
-  filter: blur(80px);
-  animation: waveSpin 30s linear infinite;
-  opacity: 0.7;
-}
-
-@keyframes waveSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  background: radial-gradient(circle at center, #4a0000 0%, #00005a 50%, #000000 100%);
+  opacity: 1;
 }
 
 /* Layout Styles */
@@ -42,7 +27,7 @@ body::before {
   height: 100vh;
   position: relative;
   z-index: 1;
-  overflow: hidden; /* Buz efektlerinin taşmasını önlemek için */
+  overflow: hidden;
 }
 
 .app-header {
@@ -192,7 +177,6 @@ body::before {
   cursor: not-allowed;
 }
 
-/* Skeleton Loading Animation */
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -519,8 +503,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   padding: 5px 0;
-  min-width: 100%; /* En az üstündeki buton kadar geniş olsun */
-  width: max-content; /* İçerik (Logout vb.) uzunsa ona göre genişlesin */
+  min-width: 100%;
+  width: max-content;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   z-index: 100;
   margin-top: 5px;

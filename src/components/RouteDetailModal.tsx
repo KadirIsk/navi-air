@@ -50,9 +50,9 @@ const RouteDetailModal: React.FC<RouteDetailModalProps> = ({ isOpen, onClose, ro
   }, [isOpen, route]);
 
   useEffect(() => {
-    if (!isOpen || !mapContainerRef.current) return;
+    if (!isOpen) return;
 
-    if (!mapInstanceRef.current) {
+    if (!mapInstanceRef.current && mapContainerRef.current) {
       const map = L.map(mapContainerRef.current).setView([41.0082, 28.9784], 6);
       
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -62,18 +62,19 @@ const RouteDetailModal: React.FC<RouteDetailModalProps> = ({ isOpen, onClose, ro
       mapInstanceRef.current = map;
     }
 
-    const map = mapInstanceRef.current;
+    if (mapInstanceRef.current) {
+      const map = mapInstanceRef.current;
+      
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 200);
 
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 200);
+      map.eachLayer((layer) => {
+        if (layer instanceof L.TileLayer) return;
+        map.removeLayer(layer);
+      });
 
-    map.eachLayer((layer) => {
-      if (layer instanceof L.TileLayer) return;
-      map.removeLayer(layer);
-    });
-
-    if (route && Object.keys(coords).length > 0) {
+      if (route && Object.keys(coords).length > 0) {
       const points: [number, number][] = [];
 
       route.steps.forEach((step) => {
@@ -131,15 +132,15 @@ const RouteDetailModal: React.FC<RouteDetailModalProps> = ({ isOpen, onClose, ro
         map.fitBounds(points, { padding: [50, 50] });
       }
     }
-
-  }, [isOpen, coords, route]);
-
-  useEffect(() => {
-    if (!isOpen && mapInstanceRef.current) {
-      mapInstanceRef.current.remove();
-      mapInstanceRef.current = null;
     }
-  }, [isOpen]);
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, [isOpen, coords, route]);
 
   if (!isOpen) return null;
 

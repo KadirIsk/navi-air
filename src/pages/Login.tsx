@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../services/authService';
 
@@ -8,6 +8,16 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  const isAuthenticated = !!localStorage.getItem('accessToken');
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/routes');
+    }
+  }, [navigate, isAuthenticated]);
+
+  if (isAuthenticated) return null;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
