@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getLocations, deleteLocation, createLocation, updateLocation, type Location, type LocationFilter } from '../services/locationService';
 import Modal, { type ModalButton } from '../components/Modal';
+import { useTranslation } from 'react-i18next';
 
 const Locations: React.FC = () => {
   const [locations, setLocations] = useState<Location[]>([]);
@@ -27,6 +28,7 @@ const Locations: React.FC = () => {
   const [editName, setEditName] = useState<string>('');
   const [editCountry, setEditCountry] = useState<string>('');
   const [editCity, setEditCity] = useState<string>('');
+  const { t } = useTranslation();
 
   const [modalConfig, setModalConfig] = useState<{
     isOpen: boolean;
@@ -74,12 +76,12 @@ const Locations: React.FC = () => {
   const handleDelete = (id: number) => {
     setModalConfig({
       isOpen: true,
-      title: 'Delete Location',
-      message: 'Are you sure you want to delete this location? This action cannot be undone.',
+      title: t('locations.delete_title'),
+      message: t('locations.delete_confirm'),
       type: 'warning',
       buttons: [
-        { label: 'Cancel', onClick: closeModal, style: { backgroundColor: '#6c757d' } },
-        { label: 'Delete', onClick: async () => {
+        { label: t('common.cancel'), onClick: closeModal, style: { backgroundColor: '#6c757d' } },
+        { label: t('common.delete'), onClick: async () => {
             await deleteLocation(id);
             fetchLocations();
             closeModal();
@@ -124,19 +126,19 @@ const Locations: React.FC = () => {
     e.stopPropagation();
 
     if (!newLocation.name || newLocation.name.length > 150) {
-      setModalConfig({ isOpen: true, title: 'Validation Error', message: 'Name is required and cannot exceed 150 characters.', type: 'error' });
+      setModalConfig({ isOpen: true, title: t('errors.validation_error'), message: t('errors.name_length'), type: 'error' });
       return;
     }
     if (!newLocation.country || newLocation.country.length > 100) {
-      setModalConfig({ isOpen: true, title: 'Validation Error', message: 'Country is required and cannot exceed 100 characters.', type: 'error' });
+      setModalConfig({ isOpen: true, title: t('errors.validation_error'), message: t('errors.country_length'), type: 'error' });
       return;
     }
     if (!newLocation.city || newLocation.city.length > 100) {
-      setModalConfig({ isOpen: true, title: 'Validation Error', message: 'City is required and cannot exceed 100 characters.', type: 'error' });
+      setModalConfig({ isOpen: true, title: t('errors.validation_error'), message: t('errors.city_length'), type: 'error' });
       return;
     }
     if (!newLocation.locationCode || newLocation.locationCode.length > 10) {
-      setModalConfig({ isOpen: true, title: 'Validation Error', message: 'Location Code is required and cannot exceed 10 characters.', type: 'error' });
+      setModalConfig({ isOpen: true, title: t('errors.validation_error'), message: t('errors.code_length'), type: 'error' });
       return;
     }
 
@@ -205,7 +207,7 @@ const Locations: React.FC = () => {
         <button 
           className="search-input-clear-btn" 
           onClick={() => handleClearFilter(name)}
-          title="Clear"
+          title={t('common.close')}
         >
           &times;
         </button>
@@ -218,26 +220,26 @@ const Locations: React.FC = () => {
   return (
     <div className="page-container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h2>Locations</h2>
+        <h2>{t('locations.title')}</h2>
       </div>
       
       <div className="search-container">
-        {renderSearchInput('name', 'Name')}
-        {renderSearchInput('country', 'Country')}
-        {renderSearchInput('city', 'City')}
-        {renderSearchInput('locationCode', 'Code')}
-        <button onClick={handleSearch} className="btn-action btn-edit">Search</button>
+        {renderSearchInput('name', t('locations.name'))}
+        {renderSearchInput('country', t('locations.country'))}
+        {renderSearchInput('city', t('locations.city'))}
+        {renderSearchInput('locationCode', t('locations.code'))}
+        <button onClick={handleSearch} className="btn-action btn-edit">{t('common.search')}</button>
       </div>
 
       <div className="table-container">
         <table className="data-table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Country</th>
-              <th>City</th>
-              <th>Code</th>
-              <th>Actions</th>
+              <th>{t('locations.name')}</th>
+              <th>{t('locations.country')}</th>
+              <th>{t('locations.city')}</th>
+              <th>{t('locations.code')}</th>
+              <th>{t('common.actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -246,13 +248,13 @@ const Locations: React.FC = () => {
             >
               {isAddActive ? (
                 <>
-                  <td><input name="name" value={newLocation.name} onChange={handleNewLocationChange} placeholder="Name" className="search-input" style={{width: '100%', boxSizing: 'border-box'}} autoFocus /></td>
-                  <td><input name="country" value={newLocation.country} onChange={handleNewLocationChange} placeholder="Country" className="search-input" style={{width: '100%', boxSizing: 'border-box'}} /></td>
-                  <td><input name="city" value={newLocation.city} onChange={handleNewLocationChange} placeholder="City" className="search-input" style={{width: '100%', boxSizing: 'border-box'}} /></td>
-                  <td><input name="locationCode" value={newLocation.locationCode} onChange={handleNewLocationChange} placeholder="Code" className="search-input" style={{width: '100%', boxSizing: 'border-box'}} /></td>
+                  <td><input name="name" value={newLocation.name} onChange={handleNewLocationChange} placeholder={t('locations.name')} className="search-input" style={{width: '100%', boxSizing: 'border-box'}} autoFocus /></td>
+                  <td><input name="country" value={newLocation.country} onChange={handleNewLocationChange} placeholder={t('locations.country')} className="search-input" style={{width: '100%', boxSizing: 'border-box'}} /></td>
+                  <td><input name="city" value={newLocation.city} onChange={handleNewLocationChange} placeholder={t('locations.city')} className="search-input" style={{width: '100%', boxSizing: 'border-box'}} /></td>
+                  <td><input name="locationCode" value={newLocation.locationCode} onChange={handleNewLocationChange} placeholder={t('locations.code')} className="search-input" style={{width: '100%', boxSizing: 'border-box'}} /></td>
                   <td style={{ whiteSpace: 'nowrap' }}>
-                    <button onClick={handleSaveNewLocation} className="btn-action" style={{ backgroundColor: '#28a745', marginRight: '5px' }}>Save</button>
-                    <button onClick={handleCancelNewLocation} className="btn-action" style={{ backgroundColor: '#dc3545' }}>Cancel</button>
+                    <button onClick={handleSaveNewLocation} className="btn-action" style={{ backgroundColor: '#28a745', marginRight: '5px' }}>{t('common.save')}</button>
+                    <button onClick={handleCancelNewLocation} className="btn-action" style={{ backgroundColor: '#dc3545' }}>{t('common.cancel')}</button>
                   </td>
                 </>
               ) : (
@@ -262,7 +264,7 @@ const Locations: React.FC = () => {
                   className="add-new-trigger"
                   style={{ textAlign: 'center', color: '#aaa', fontStyle: 'italic', padding: '15px', cursor: 'pointer' }}
                 >
-                  + Click to add new location
+                  {t('locations.add_new')}
                 </td>
               )}
             </tr>
@@ -337,13 +339,13 @@ const Locations: React.FC = () => {
                   <td>
                     {editingId === loc.id ? (
                       <>
-                        <button onClick={() => handleSaveEdit(loc.id)} className="btn-action" style={{ backgroundColor: '#28a745', marginRight: '5px' }}>Save</button>
-                        <button onClick={handleCancelEdit} className="btn-action" style={{ backgroundColor: '#dc3545' }}>Cancel</button>
+                        <button onClick={() => handleSaveEdit(loc.id)} className="btn-action" style={{ backgroundColor: '#28a745', marginRight: '5px' }}>{t('common.save')}</button>
+                        <button onClick={handleCancelEdit} className="btn-action" style={{ backgroundColor: '#dc3545' }}>{t('common.cancel')}</button>
                       </>
                     ) : (
                       <>
-                        <button onClick={() => handleEdit(loc)} className="btn-action btn-edit">Edit</button>
-                        <button onClick={() => handleDelete(loc.id)} className="btn-action btn-delete">Delete</button>
+                        <button onClick={() => handleEdit(loc)} className="btn-action btn-edit">{t('common.edit')}</button>
+                        <button onClick={() => handleDelete(loc.id)} className="btn-action btn-delete">{t('common.delete')}</button>
                       </>
                     )}
                   </td>
@@ -374,18 +376,18 @@ const Locations: React.FC = () => {
                     className="icon-btn" 
                     disabled={page === 1 || loading} 
                     onClick={() => setPage(p => p - 1)}
-                    title="Previous Page"
+                    title={t('common.previous')}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                       <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
                     </svg>
                   </button>
-                  <span>Page {page}</span>
+                  <span>{t('common.page')} {page}</span>
                   <button 
                     className="icon-btn" 
                     disabled={loading || page >= totalPages}
                     onClick={() => setPage(p => p + 1)}
-                    title="Next Page"
+                    title={t('common.next')}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                       <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>

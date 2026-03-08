@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { getLocations, type Location } from '../services/locationService';
 import { getRoutes, type RouteResponseItem, type RouteDetail } from '../services/routeService';
 import RouteDetailModal from '../components/RouteDetailModal';
+import { useTranslation } from 'react-i18next';
 
 const RoutesPage: React.FC = () => {
   const [locations, setLocations] = useState<Location[]>([]);
@@ -18,6 +19,7 @@ const RoutesPage: React.FC = () => {
   
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedRoute, setSelectedRoute] = useState<RouteDetail | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -89,7 +91,7 @@ const RoutesPage: React.FC = () => {
   return (
     <div className="page-container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h2>Routes</h2>
+        <h2>{t('routes.title')}</h2>
       </div>
 
       <div className="search-container">
@@ -100,7 +102,7 @@ const RoutesPage: React.FC = () => {
             className="search-input"
             style={{ width: '100%' }}
           >
-            <option value="">Select Origin</option>
+            <option value="">{t('routes.select_origin')}</option>
             {locationOptions.map(opt => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
@@ -109,7 +111,7 @@ const RoutesPage: React.FC = () => {
             <button 
               className="search-input-clear-btn" 
               onClick={handleClearOrigin}
-              title="Clear"
+              title={t('common.close')}
               style={{ right: '25px' }}
             >
               &times;
@@ -123,7 +125,7 @@ const RoutesPage: React.FC = () => {
             className="search-input"
             style={{ width: '100%' }}
           >
-            <option value="">Select Destination</option>
+            <option value="">{t('routes.select_destination')}</option>
             {locationOptions.map(opt => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
@@ -132,7 +134,7 @@ const RoutesPage: React.FC = () => {
             <button 
               className="search-input-clear-btn" 
               onClick={handleClearDestination}
-              title="Clear"
+              title={t('common.close')}
               style={{ right: '25px' }}
             >
               &times;
@@ -158,13 +160,13 @@ const RoutesPage: React.FC = () => {
               color: selectedDate ? 'white' : 'rgba(255, 255, 255, 0.5)'
             }}
           >
-            {selectedDate || "Please choose a date"}
+            {selectedDate || t('routes.choose_date')}
           </div>
           {selectedDate && (
             <button 
               className="search-input-clear-btn" 
               onClick={handleClearDate}
-              title="Clear"
+              title={t('common.close')}
               style={{ right: '35px' }}
             >
               &times;
@@ -172,7 +174,7 @@ const RoutesPage: React.FC = () => {
           )}
         </div>
         <button onClick={handleSearch} className="btn-action btn-edit" disabled={loading}>
-          {loading ? 'Searching...' : 'Search'}
+          {loading ? t('routes.searching') : t('common.search')}
         </button>
       </div>
 
@@ -180,8 +182,8 @@ const RoutesPage: React.FC = () => {
         <table className="data-table">
           <thead>
             <tr>
-              <th>Title</th>
-              <th style={{ width: '150px', textAlign: 'center' }}>Action</th>
+              <th>{t('locations.name')}</th>
+              <th style={{ width: '150px', textAlign: 'center' }}>{t('common.actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -197,14 +199,14 @@ const RoutesPage: React.FC = () => {
                 <tr key={index}>
                   <td>{item.route.title}</td>
                   <td style={{ textAlign: 'center' }}>
-                    <button onClick={() => handleOpenDetail(item.route)} className="btn-action btn-edit">Detail</button>
+                    <button onClick={() => handleOpenDetail(item.route)} className="btn-action btn-edit">{t('common.detail')}</button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
                 <td colSpan={2} style={{ textAlign: 'center', padding: '20px', color: '#aaa' }}>
-                  {hasSearched ? 'No routes found.' : 'Please search for routes.'}
+                  {hasSearched ? t('routes.no_routes') : t('routes.please_search')}
                 </td>
               </tr>
             )}

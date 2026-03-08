@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import '../App.css';
+import { useTranslation } from 'react-i18next';
 
 const MainLayout: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -9,6 +10,7 @@ const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -49,11 +51,21 @@ const MainLayout: React.FC = () => {
 
   const hasRole = (roles: string[]) => roles.some(role => userRoles.includes(role));
 
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
   return (
     <div className="app-container">
       <header className="app-header">
-        <div style={{ fontSize: '1.5rem', fontWeight: '800', color: '#fff', fontFamily: "'Syne', sans-serif", letterSpacing: '-1px' }}>
-          NAVI<span style={{ color: '#2196F3' }}>AIR</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: '800', color: '#fff', fontFamily: "'Syne', sans-serif", letterSpacing: '-1px' }}>
+            NAVI<span style={{ color: '#2196F3' }}>AIR</span>
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button onClick={() => changeLanguage('en')} className="icon-btn" style={{ width: 'auto', padding: '0 8px', fontSize: '0.8rem', opacity: i18n.language === 'en' ? 1 : 0.5 }}>EN</button>
+            <button onClick={() => changeLanguage('tr')} className="icon-btn" style={{ width: 'auto', padding: '0 8px', fontSize: '0.8rem', opacity: i18n.language === 'tr' ? 1 : 0.5 }}>TR</button>
+          </div>
         </div>
         
         <div className="user-menu" ref={dropdownRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
@@ -66,7 +78,7 @@ const MainLayout: React.FC = () => {
           {isDropdownOpen && (
             <div className="user-menu-dropdown">
               <button onClick={handleLogout} className="user-menu-item">
-                Logout
+                {t('menu.logout')}
               </button>
             </div>
           )}
@@ -79,21 +91,21 @@ const MainLayout: React.FC = () => {
             {hasRole(['ADMIN', 'AGENCY']) && (
               <li>
                 <Link to="/routes" style={{ backgroundColor: isActive('/routes') ? 'rgba(255, 255, 255, 0.15)' : 'transparent', color: isActive('/routes') ? '#fff' : 'rgba(255, 255, 255, 0.8)' }}>
-                  Routes
+                  {t('menu.routes')}
                 </Link>
               </li>
             )}
             {hasRole(['ADMIN']) && (
               <li>
                 <Link to="/locations" style={{ backgroundColor: isActive('/locations') ? 'rgba(255, 255, 255, 0.15)' : 'transparent', color: isActive('/locations') ? '#fff' : 'rgba(255, 255, 255, 0.8)' }}>
-                  Locations
+                  {t('menu.locations')}
                 </Link>
               </li>
             )}
             {hasRole(['ADMIN']) && (
               <li>
                 <Link to="/transportations" style={{ backgroundColor: isActive('/transportations') ? 'rgba(255, 255, 255, 0.15)' : 'transparent', color: isActive('/transportations') ? '#fff' : 'rgba(255, 255, 255, 0.8)' }}>
-                  Transportations
+                  {t('menu.transportations')}
                 </Link>
               </li>
             )}

@@ -14,6 +14,7 @@ import {
 } from '../services/transportationService';
 import { getLocations, type Location } from '../services/locationService';
 import Modal, { type ModalButton } from '../components/Modal';
+import { useTranslation } from 'react-i18next';
 
 const Transportations: React.FC = () => {
   const [transportations, setTransportations] = useState<Transportation[]>([]);
@@ -22,6 +23,7 @@ const Transportations: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const { t } = useTranslation();
   
   const [filters, setFilters] = useState<TransportationFilter>({
     originLocationId: '',
@@ -117,12 +119,12 @@ const Transportations: React.FC = () => {
   const handleDelete = (id: number) => {
     setModalConfig({
       isOpen: true,
-      title: 'Delete Transportation',
-      message: 'Are you sure you want to delete this transportation? This action cannot be undone.',
+      title: t('transportations.delete_title'),
+      message: t('transportations.delete_confirm'),
       type: 'warning',
       buttons: [
-        { label: 'Cancel', onClick: closeModal, style: { backgroundColor: '#6c757d' } },
-        { label: 'Delete', onClick: async () => {
+        { label: t('common.cancel'), onClick: closeModal, style: { backgroundColor: '#6c757d' } },
+        { label: t('common.delete'), onClick: async () => {
             await deleteTransportation(id);
             fetchTransportations();
             closeModal();
@@ -148,7 +150,7 @@ const Transportations: React.FC = () => {
 
   const handleSaveEdit = async (id: number) => {
     if (!editData.originLocationId || !editData.destinationLocationId || !editData.transportationType || editData.operatingDays.length === 0) {
-      setModalConfig({ isOpen: true, title: 'Validation Error', message: 'All fields are required.', type: 'error' });
+      setModalConfig({ isOpen: true, title: t('errors.validation_error'), message: t('errors.required_fields'), type: 'error' });
       return;
     }
 
@@ -164,7 +166,7 @@ const Transportations: React.FC = () => {
       fetchTransportations();
     } catch (error) {
       console.error("Failed to update transportation", error);
-      setModalConfig({ isOpen: true, title: 'Error', message: 'Failed to update transportation.', type: 'error' });
+      setModalConfig({ isOpen: true, title: 'Error', message: t('errors.update_failed'), type: 'error' });
     }
   };
 
@@ -192,7 +194,7 @@ const Transportations: React.FC = () => {
     e.stopPropagation();
 
     if (!newTransportation.originLocationId || !newTransportation.destinationLocationId || !newTransportation.transportationType || newTransportation.operatingDays.length === 0) {
-      setModalConfig({ isOpen: true, title: 'Validation Error', message: 'All fields are required.', type: 'error' });
+      setModalConfig({ isOpen: true, title: t('errors.validation_error'), message: t('errors.required_fields'), type: 'error' });
       return;
     }
 
@@ -209,7 +211,7 @@ const Transportations: React.FC = () => {
       fetchTransportations();
     } catch (error) {
       console.error("Failed to create transportation", error);
-      setModalConfig({ isOpen: true, title: 'Error', message: 'Failed to create transportation.', type: 'error' });
+      setModalConfig({ isOpen: true, title: 'Error', message: t('errors.create_failed'), type: 'error' });
     }
   };
 
@@ -265,7 +267,7 @@ const Transportations: React.FC = () => {
         <button 
           className="search-input-clear-btn" 
           onClick={() => handleClearFilter(name)}
-          title="Clear"
+          title={t('common.close')}
           style={{ right: '25px' }}
         >
           &times;
@@ -283,26 +285,26 @@ const Transportations: React.FC = () => {
   return (
     <div className="page-container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h2>Transportations</h2>
+        <h2>{t('transportations.title')}</h2>
       </div>
       
       <div className="search-container">
-        {renderFilterSelect('originLocationId', 'Filter Origin', locationOptions)}
-        {renderFilterSelect('destinationLocationId', 'Filter Destination', locationOptions)}
-        {renderFilterSelect('transportationType', 'Filter Type', typeOptions)}
-        {renderFilterSelect('operatingDays', 'Filter Day', dayOptions)}
-        <button onClick={handleSearch} className="btn-action btn-edit">Search</button>
+        {renderFilterSelect('originLocationId', t('transportations.filter_origin'), locationOptions)}
+        {renderFilterSelect('destinationLocationId', t('transportations.filter_destination'), locationOptions)}
+        {renderFilterSelect('transportationType', t('transportations.filter_type'), typeOptions)}
+        {renderFilterSelect('operatingDays', t('transportations.filter_day'), dayOptions)}
+        <button onClick={handleSearch} className="btn-action btn-edit">{t('common.search')}</button>
       </div>
 
       <div className="table-container">
         <table className="data-table">
           <thead>
             <tr>
-              <th>Origin</th>
-              <th>Destination</th>
-              <th>Type</th>
-              <th>Operating Days</th>
-              <th>Actions</th>
+              <th>{t('transportations.origin')}</th>
+              <th>{t('transportations.destination')}</th>
+              <th>{t('transportations.type')}</th>
+              <th>{t('transportations.operating_days')}</th>
+              <th>{t('common.actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -314,19 +316,19 @@ const Transportations: React.FC = () => {
                 <>
                   <td>
                     <select name="originLocationId" value={newTransportation.originLocationId} onChange={handleNewChange} className="search-input" style={{width: '100%'}} autoFocus>
-                      <option value="">Select Origin</option>
+                      <option value="">{t('transportations.select_origin')}</option>
                       {locationOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                     </select>
                   </td>
                   <td>
                     <select name="destinationLocationId" value={newTransportation.destinationLocationId} onChange={handleNewChange} className="search-input" style={{width: '100%'}}>
-                      <option value="">Select Destination</option>
+                      <option value="">{t('transportations.select_destination')}</option>
                       {locationOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                     </select>
                   </td>
                   <td>
                     <select name="transportationType" value={newTransportation.transportationType} onChange={handleNewChange} className="search-input" style={{width: '100%'}}>
-                      <option value="">Select Type</option>
+                      <option value="">{t('transportations.select_type')}</option>
                       {typeOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                     </select>
                   </td>
@@ -334,11 +336,11 @@ const Transportations: React.FC = () => {
                     <select name="operatingDays" value={newTransportation.operatingDays} onChange={handleNewChange} className="search-input" style={{width: '100%', height: '60px', backgroundColor: 'transparent'}} multiple>
                       {dayOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                     </select>
-                    <div style={{fontSize: '0.7rem', color: '#aaa'}}>Hold Ctrl to select multiple</div>
+                    <div style={{fontSize: '0.7rem', color: '#aaa'}}>{t('transportations.hold_ctrl')}</div>
                   </td>
                   <td style={{ whiteSpace: 'nowrap', verticalAlign: 'top' }}>
-                    <button onClick={handleSaveNew} className="btn-action" style={{ backgroundColor: '#28a745', marginRight: '5px' }}>Save</button>
-                    <button onClick={handleCancelNew} className="btn-action" style={{ backgroundColor: '#dc3545' }}>Cancel</button>
+                    <button onClick={handleSaveNew} className="btn-action" style={{ backgroundColor: '#28a745', marginRight: '5px' }}>{t('common.save')}</button>
+                    <button onClick={handleCancelNew} className="btn-action" style={{ backgroundColor: '#dc3545' }}>{t('common.cancel')}</button>
                   </td>
                 </>
               ) : (
@@ -348,7 +350,7 @@ const Transportations: React.FC = () => {
                   className="add-new-trigger"
                   style={{ textAlign: 'center', color: '#aaa', fontStyle: 'italic', padding: '15px', cursor: 'pointer' }}
                 >
-                  + Click to add new transportation
+                  {t('transportations.add_new')}
                 </td>
               )}
             </tr>
@@ -382,7 +384,7 @@ const Transportations: React.FC = () => {
                         <select name="operatingDays" value={editData.operatingDays} onChange={handleEditChange} className="search-input" style={{width: '100%', height: '60px'}} multiple>
                           {dayOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                         </select>
-                        <div style={{fontSize: '0.7rem', color: '#aaa'}}>Hold Ctrl to select multiple</div>
+                        <div style={{fontSize: '0.7rem', color: '#aaa'}}>{t('transportations.hold_ctrl')}</div>
                       </>
                     ) : (
                       item.operatingDays.join(', ')
@@ -391,13 +393,13 @@ const Transportations: React.FC = () => {
                   <td style={{ verticalAlign: editingId === item.id ? 'top' : 'middle' }}>
                     {editingId === item.id ? (
                       <>
-                        <button onClick={() => handleSaveEdit(item.id)} className="btn-action" style={{ backgroundColor: '#28a745', marginRight: '5px' }}>Save</button>
-                        <button onClick={handleCancelEdit} className="btn-action" style={{ backgroundColor: '#dc3545' }}>Cancel</button>
+                        <button onClick={() => handleSaveEdit(item.id)} className="btn-action" style={{ backgroundColor: '#28a745', marginRight: '5px' }}>{t('common.save')}</button>
+                        <button onClick={handleCancelEdit} className="btn-action" style={{ backgroundColor: '#dc3545' }}>{t('common.cancel')}</button>
                       </>
                     ) : (
                       <>
-                        <button onClick={() => handleEdit(item)} className="btn-action btn-edit">Edit</button>
-                        <button onClick={() => handleDelete(item.id)} className="btn-action btn-delete">Delete</button>
+                        <button onClick={() => handleEdit(item)} className="btn-action btn-edit">{t('common.edit')}</button>
+                        <button onClick={() => handleDelete(item.id)} className="btn-action btn-delete">{t('common.delete')}</button>
                       </>
                     )}
                   </td>
@@ -428,18 +430,18 @@ const Transportations: React.FC = () => {
                     className="icon-btn" 
                     disabled={page === 1 || loading} 
                     onClick={() => setPage(p => p - 1)}
-                    title="Previous Page"
+                    title={t('common.previous')}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                       <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
                     </svg>
                   </button>
-                  <span>Page {page}</span>
+                  <span>{t('common.page')} {page}</span>
                   <button 
                     className="icon-btn" 
                     disabled={loading || page >= totalPages}
                     onClick={() => setPage(p => p + 1)}
-                    title="Next Page"
+                    title={t('common.next')}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                       <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>

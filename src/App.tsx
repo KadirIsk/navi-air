@@ -8,6 +8,7 @@ import RoutesPage from './pages/RoutesPage';
 import './App.css';
 import client from './api/client';
 import Modal from './components/Modal';
+import { useTranslation } from 'react-i18next';
 
 const PrivateRoute = ({ roles }: { roles: string[] }) => {
   const token = localStorage.getItem('accessToken');
@@ -43,6 +44,7 @@ const PrivateRoute = ({ roles }: { roles: string[] }) => {
 const AppContent = () => {
   const [forbiddenModalOpen, setForbiddenModalOpen] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const interceptor = client.interceptors.response.use(
@@ -97,8 +99,8 @@ const AppContent = () => {
 
       <Modal 
         isOpen={forbiddenModalOpen}
-        title="Access Denied"
-        message="Yetkiniz bulunmamaktadir, sistem yoneticinizle gorusun."
+        title={t('errors.access_denied')}
+        message={t('errors.access_denied_msg')}
         type="error"
         onClose={handleCloseForbidden}
       />
