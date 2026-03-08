@@ -9,9 +9,32 @@ import './App.css';
 import client from './api/client';
 import Modal from './components/Modal';
 
-const ProtectedRoute = () => {
+const PrivateRoute = ({ roles }: { roles: string[] }) => {
   const token = localStorage.getItem('accessToken');
   if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    // Rolleri güvenli bir şekilde diziye çevir (roles, role veya authorities alanlarını kontrol et)
+    const extractedRoles = payload.roles || (payload.role ? [payload.role] : []) || (payload.authorities ? payload.authorities : []);
+    const rawUserRoles = Array.isArray(extractedRoles) ? extractedRoles : [extractedRoles];
+    const userRoles = rawUserRoles.map((r: any) => String(r).replace(/^ROLE_/, ''));
+    const hasRole = roles.some(role => userRoles.includes(role));
+
+    if (!hasRole) {
+      if (userRoles.some((r: string) => ['ADMIN', 'AGENCY'].includes(r))) {
+         return <Navigate to="/routes" replace />;
+      }
+      console.warn("User has no valid roles:", userRoles);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      return <Navigate to="/login" replace />;
+    }
+  } catch (e) {
+    console.error("Token decode error", e);
+    localStorage.removeItem('accessToken');
     return <Navigate to="/login" replace />;
   }
   return <Outlet />;
@@ -55,13 +78,19 @@ const AppContent = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         
-        <Route element={<ProtectedRoute />}>
-          {/* Ana Uygulama Yapısı */}
+        {/* Ana Uygulama Yapısı */}
+        <Route element={<PrivateRoute roles={['ADMIN', 'AGENCY']} />}>
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Navigate to="/routes" replace />} />
-            <Route path="locations" element={<Locations />} />
-            <Route path="transportations" element={<Transportations />} />
-            <Route path="routes" element={<RoutesPage />} />
+            
+            <Route element={<PrivateRoute roles={['ADMIN']} />}>
+              <Route path="locations" element={<Locations />} />
+              <Route path="transportations" element={<Transportations />} />
+            </Route>
+
+            <Route element={<PrivateRoute roles={['ADMIN', 'AGENCY']} />}>
+              <Route path="routes" element={<RoutesPage />} />
+            </Route>
           </Route>
         </Route>
       </Routes>

@@ -5,6 +5,7 @@ import '../App.css';
 const MainLayout: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [username, setUsername] = useState('User');
+  const [userRoles, setUserRoles] = useState<string[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -17,6 +18,10 @@ const MainLayout: React.FC = () => {
         if (payload.sub) {
           setUsername(payload.sub);
         }
+        const extractedRoles = payload.roles || (payload.role ? [payload.role] : []) || (payload.authorities ? payload.authorities : []);
+        const rolesArrayRaw = Array.isArray(extractedRoles) ? extractedRoles : [extractedRoles];
+        const rolesArray = rolesArrayRaw.map((r: any) => String(r).replace(/^ROLE_/, ''));
+        setUserRoles(rolesArray);
       } catch (e) {
         console.error("Failed to parse token", e);
       }
@@ -41,6 +46,8 @@ const MainLayout: React.FC = () => {
   };
 
   const isActive = (path: string) => location.pathname.startsWith(path);
+
+  const hasRole = (roles: string[]) => roles.some(role => userRoles.includes(role));
 
   return (
     <div className="app-container">
@@ -69,21 +76,27 @@ const MainLayout: React.FC = () => {
       <div className="app-body">
         <aside className="app-sidebar">
           <ul>
-            <li>
-              <Link to="/routes" style={{ backgroundColor: isActive('/routes') ? 'rgba(255, 255, 255, 0.15)' : 'transparent', color: isActive('/routes') ? '#fff' : 'rgba(255, 255, 255, 0.8)' }}>
-                Routes
-              </Link>
-            </li>
-            <li>
-              <Link to="/locations" style={{ backgroundColor: isActive('/locations') ? 'rgba(255, 255, 255, 0.15)' : 'transparent', color: isActive('/locations') ? '#fff' : 'rgba(255, 255, 255, 0.8)' }}>
-                Locations
-              </Link>
-            </li>
-            <li>
-              <Link to="/transportations" style={{ backgroundColor: isActive('/transportations') ? 'rgba(255, 255, 255, 0.15)' : 'transparent', color: isActive('/transportations') ? '#fff' : 'rgba(255, 255, 255, 0.8)' }}>
-                Transportations
-              </Link>
-            </li>
+            {hasRole(['ADMIN', 'AGENCY']) && (
+              <li>
+                <Link to="/routes" style={{ backgroundColor: isActive('/routes') ? 'rgba(255, 255, 255, 0.15)' : 'transparent', color: isActive('/routes') ? '#fff' : 'rgba(255, 255, 255, 0.8)' }}>
+                  Routes
+                </Link>
+              </li>
+            )}
+            {hasRole(['ADMIN']) && (
+              <li>
+                <Link to="/locations" style={{ backgroundColor: isActive('/locations') ? 'rgba(255, 255, 255, 0.15)' : 'transparent', color: isActive('/locations') ? '#fff' : 'rgba(255, 255, 255, 0.8)' }}>
+                  Locations
+                </Link>
+              </li>
+            )}
+            {hasRole(['ADMIN']) && (
+              <li>
+                <Link to="/transportations" style={{ backgroundColor: isActive('/transportations') ? 'rgba(255, 255, 255, 0.15)' : 'transparent', color: isActive('/transportations') ? '#fff' : 'rgba(255, 255, 255, 0.8)' }}>
+                  Transportations
+                </Link>
+              </li>
+            )}
           </ul>
         </aside>
         
