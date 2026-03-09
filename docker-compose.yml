@@ -1,0 +1,61 @@
+services:
+  navi-air-frontend:
+    container_name: navi-air-frontend
+    build:
+      context: .
+      args:
+        VITE_API_BASE_URL: "/api/v1"
+    ports:
+      - "5665:80"
+    depends_on:
+      - navi-air-backend
+    networks:
+      - app_network
+
+  navi-air-backend:
+    container_name: navi-air-backend
+    build:
+      context: ../aviation-case-study
+    ports:
+      - "8899:8899"
+    depends_on:
+      - db
+      - cache
+    networks:
+      - app_network
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  db:
+    image: postgres:16-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: aviation_db
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d aviation_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  cache:
+    image: redis:7-alpine
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
