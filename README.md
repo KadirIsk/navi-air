@@ -1,73 +1,75 @@
-# React + TypeScript + Vite
+# Navi-Air Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bu proje, Navi-Air uygulamasının kullanıcı arayüzünü içerir. Lokasyonların, ulaşımların yönetilmesi ve bu lokasyonlar arasında rota bulunması gibi işlevsellikler sunar. Proje, kimlik doğrulama, rol bazlı erişim kontrolü ve çoklu dil (Türkçe/İngilizce) desteği gibi modern web uygulama özelliklerini barındırır.
 
-Currently, two official plugins are available:
+## Kullanılan Teknolojiler
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend:** React, TypeScript, Vite
+- **Routing:** React Router
+- **API İletişimi:** Axios
+- **Harita:** Leaflet & OpenStreetMap
+- **Uluslararasılaştırma (i18n):** react-i18next
+- **Deployment:** Docker, Nginx
 
-## React Compiler
+## Ön Gereksinimler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Projeyi sorunsuz bir şekilde ayağa kaldırabilmek için aşağıdaki araçların sisteminizde yüklü olması gerekmektedir.
 
-## Expanding the ESLint configuration
+| Teknoloji          | Önerilen Sürüm | Kontrol Komutu           |
+| ------------------ | -------------- | ------------------------ |
+| **Node.js**        | `24.x`         | `node -v`                |
+| **npm**            | `10.x`         | `npm -v`                 |
+| **Docker**         | `20.10+`       | `docker --version`       |
+| **Docker Compose** | `v2+`          | `docker compose version` |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Backend Projesi
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Bu frontend projesinin çalışabilmesi için backend projesinin de hazır olması gerekmektedir.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Backend projesinin (`aviation-case-study`) bu projeyle aynı dizin seviyesinde (yan yana klasörlerde) bulunması gerekmektedir.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Projeyi Çalıştırma
+
+Bu proje, backend ve diğer bağımlılıkları (veritabanı, Redis) ile birlikte tek bir komutla ayağa kaldırılacak şekilde tasarlanmıştır.
+
+### Gerekli Dosya Yapısı
+
+Projeyi çalıştırmadan önce, klasör yapınızın aşağıdaki gibi olduğundan emin olun:
+
+```
+/calisma_dizini/
+  ├── navi-air/             # Bu frontend projesi
+  └── aviation-case-study/  # Backend projesi
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Çalıştırma Adımları
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1.  Terminali açın ve `navi-air` (bu proje) klasörünün içine girin.
+2.  Aşağıdaki komutu çalıştırın:
+    ```bash
+    docker-compose up --build
+    ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Bu komut, tüm servisleri (Frontend, Backend, PostgreSQL, Redis) derleyecek ve ayağa kaldıracaktır.
+
+- **Frontend:** `http://localhost:5665`
+- **Backend API:** `http://localhost:8899`
+
+> **Not:** Frontend'in düzgün çalışabilmesi için backend uygulamasının ayakta olması zorunludur. `docker-compose` bu bağımlılığı otomatik olarak yönetir.
+
+## Lokal Geliştirme Ortamı
+
+Eğer projeyi Docker olmadan, sadece lokalde geliştirmek isterseniz:
+
+1.  Backend projesini kendi ortamında çalıştırın (genellikle `http://localhost:8899` adresinde).
+2.  Bu projenin (`navi-air`) kök dizininde aşağıdaki komutları çalıştırın:
+
+    ```bash
+    # Bağımlılıkları yükle
+    npm install
+
+    # Geliştirme sunucusunu başlat
+    npm run dev
+    ```
+
+3.  Uygulama varsayılan olarak `http://localhost:5665` adresinde çalışacaktır.
