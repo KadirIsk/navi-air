@@ -69,7 +69,7 @@ const RouteDetailModal: React.FC<RouteDetailModalProps> = ({ isOpen, onClose, ro
         map.invalidateSize();
       }, 200);
 
-      map.eachLayer((layer) => {
+      map.eachLayer((layer: L.Layer) => {
         if (layer instanceof L.TileLayer) return;
         map.removeLayer(layer);
       });
