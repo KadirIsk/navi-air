@@ -25,6 +25,11 @@ services:
       - app_network
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+      - DATABASE_URL=jdbc:postgresql://db:5432/aviation_db
+      - DATABASE_USERNAME=user
+      - DATABASE_PASSWORD=password
+      - REDIS_HOST=cache
+      - REDIS_PORT=6379
 
   db:
     image: postgres:16-alpine
