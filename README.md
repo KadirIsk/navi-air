@@ -13,7 +13,7 @@ Bu proje, Navi-Air uygulamasının kullanıcı arayüzünü içerir. Lokasyonlar
 
 ## Ön Gereksinimler
 
-Projeyi sorunsuz bir şekilde ayağa kaldırabilmek için aşağıdaki araçların sisteminizde yüklü olması gerekmektedir.
+Projeyi localde sorunsuz bir şekilde ayağa kaldırabilmek için aşağıdaki araçların sisteminizde yüklü olması gerekmektedir.
 
 | Teknoloji          | Önerilen Sürüm | Kontrol Komutu           |
 | ------------------ | -------------- | ------------------------ |
@@ -47,7 +47,7 @@ Projeyi çalıştırmadan önce, klasör yapınızın aşağıdaki gibi olduğun
 1.  Terminali açın ve `navi-air` (bu proje) klasörünün içine girin.
 2.  Aşağıdaki komutu çalıştırın:
     ```bash
-    docker-compose up --build
+    docker compose up --build
     ```
 
 Bu komut, tüm servisleri (Frontend, Backend, PostgreSQL, Redis) derleyecek ve ayağa kaldıracaktır.
